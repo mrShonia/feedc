@@ -23,10 +23,10 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
-
-// $app->withEloquent();
-
+ $app->withFacades();
+//
+ $app->withEloquent();
+//
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -76,9 +76,9 @@ $app->configure('app');
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+ $app->routeMiddleware([
+     'userAccess'    => App\Http\Middleware\UserAccessMiddleware::class,
+ ]);
 
 /*
 |--------------------------------------------------------------------------
@@ -94,6 +94,7 @@ $app->configure('app');
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+$app->register(Flugg\Responder\ResponderServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
