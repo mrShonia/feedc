@@ -66,4 +66,14 @@ class UserController extends Controller
         return responder()->error(401, 'Invalid credentials')->respond(401);
     }
 
+    public function logOut()
+    {
+
+        User::where('token', $this->request->header('token'))->update([
+            'token' => null
+        ]);
+
+        return responder()->success(['message' => 'successfully logged out'])->respond();
+
+    }
 }
