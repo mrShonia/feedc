@@ -19,7 +19,7 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api/v1'],  function ($router) {
 
     $router->post('/register', 'UserController@register');
-    
+    $router->post('/login', 'UserController@login');
 
 });
 
