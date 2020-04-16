@@ -36,5 +36,34 @@ class UserController extends Controller
         return responder()->error(400, 'User already exists')->respond(400);
     }
 
-    
+    /**
+     * Register User
+     * @return user token
+     */
+
+
+    public function login()
+    {
+
+        $this->validate($this->request, [
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        $user = User::where('username', $this->request->input('username'))->first();
+
+        if ($user != NULL && Hash::check($this->request->input('password'), $user->password)) {
+
+            $token = Hash::make(md5($user . microtime().env('TOKEN_SALT')));
+
+            User::where('username', $this->request->input('username'))->update([
+                'token' => $token
+            ]);
+
+            return responder()->success(['token' => $token])->respond();
+        }
+
+        return responder()->error(401, 'Invalid credentials')->respond(401);
+    }
+
 }
