@@ -24,6 +24,10 @@ $router->group(['prefix' => 'api/v1'],  function ($router) {
 
     $router->group(['prefix' => '/user', 'middleware' => 'userAccess'],  function ($router) {
         $router->get('/logout', 'UserController@logOut');
+        $router->post('contacts/add-person', 'ContactsController@addPerson');
+        $router->delete('contacts/{id}', 'ContactsController@deletePerson');
+
+
     });
 
 

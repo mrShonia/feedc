@@ -12,8 +12,10 @@ class Contacts extends Model
      *
      * @var array
      */
+    protected $table = 'user_contacts';
+
     protected $fillable = [
-        'username', 'token'
+        'person_name', 'person_lastname', 'owner_user_id'
     ];
 
     /**
@@ -22,6 +24,24 @@ class Contacts extends Model
      * @var array
      */
     protected $hidden = [
-        'password',
+
     ];
+
+    public static function exists( $name, $lastname )
+    {
+
+        return self::where([
+            'person_name'     => $name,
+            'person_lastname' => $lastname,
+        ])->count();
+    }
+
+    public static function checkOwnership( $cotnactId, $userId )
+    {
+
+        return self::where([
+            'id'            => $cotnactId,
+            'owner_user_id' => $userId,
+        ])->exists();
+    }
 }
