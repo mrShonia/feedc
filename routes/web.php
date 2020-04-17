@@ -27,8 +27,9 @@ $router->group(['prefix' => 'api/v1'],  function ($router) {
         $router->post('contacts/add-person', 'ContactsController@addPerson');
         $router->post('contacts/add-person-number/{personId}', 'ContactsController@addPersonNumber');
         $router->delete('contacts/{id}', 'ContactsController@deletePerson');
-
-
+        $router->get('contacts/person/{id}', 'ContactsController@getPersonNumbers');
+        $router->get('contacts/list', 'ContactsController@getList');
+        $router->get('contacts/number/{number}', 'ContactsController@findPersonByNumber');
     });
 
 
