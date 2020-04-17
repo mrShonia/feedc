@@ -1,6 +1,6 @@
 # API Documentation
 
-https://explore.postman.com/templates/7386/feedc-task-doc
+https://documenter.getpostman.com/view/1523213/Szf53Us2?version=latest
 
 # Database structure
  - user_contacts Table 
