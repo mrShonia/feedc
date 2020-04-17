@@ -20,6 +20,7 @@ class ContactsController extends Controller
     function __construct( Request $request )
     {
         $this->request = $request;
+        Contacts::setUser($this->request->userData->id);
     }
 
     /**
@@ -36,23 +37,25 @@ class ContactsController extends Controller
         ]);
 
         if (Contacts::exists($this->request->input('name'), $this->request->input('lastname')) == 0) {
-            Contacts::insert([
+
+            $newContactId = Contacts::insertGetId([
                 'owner_user_id'   => $this->request->userData->id,
                 'person_name'     => $this->request->input('name'),
                 'person_lastname' => $this->request->input('lastname'),
             ]);
 
-            return responder()->success(['message' => 'Contact added'])->respond();
+            return responder()->success(['message' => 'Contact added','person_id' => $newContactId])->respond();
         }
         return responder()->error(400, 'Person with this name and lastname already exists')->respond(400);
     }
 
     public function deletePerson( int $id )
     {
-        if (Contacts::checkOwnership($id, $this->request->userData->id)) {
+        if (Contacts::checkOwnership($id)) {
 
-            Contacts::where(['id' => $id])->delete();
-            return responder()->success(['message' => 'Person deleted'])->respond();
+            if(Contacts::where(['id' => $id])->delete()){
+                return responder()->success(['message' => 'Person deleted'])->respond();
+            }
         }
         return responder()->error(400, 'Person doesn\'t exists in your contact list')->respond(400);
     }
@@ -63,10 +66,35 @@ class ContactsController extends Controller
             'number' => 'required|min:9|max:15',
         ]);
 
-        if (Contacts::checkOwnership($personId, $this->request->userData->id)) {
-            return PersonNumbers::checkAndInsert($this->request->userData->id, $personId, $this->request->input('number'));
+        if (Contacts::checkOwnership($personId)) {
+
+            if(!PersonNumbers::checkAndInsert($personId, $this->request->input('number'))){
+                responder()->error(400, 'Person\'s number already exists in your contact list')->respond(400);
+            }
+
+            return responder()->success(['message' => 'Number added'])->respond();
+        }
+        return responder()->error(400, 'Person doesn\'t exists in your contact list')->respond(400);
+    }
+
+    public function getPersonNumbers( int $personId )
+    {
+
+        if (Contacts::checkOwnership($personId)) {
+            return Contacts::getPersonNumbers($personId);
         }
 
         return responder()->error(400, 'Person doesn\'t exists in your contact list')->respond(400);
     }
+
+    public function getList()
+    {
+        return Contacts::getPersonNumbers(null);
+    }
+
+    public function findPersonByNumber( $number )
+    {
+        return Contacts::findPersonBy('number',$number);
+    }
+
 }

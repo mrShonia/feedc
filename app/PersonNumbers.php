@@ -27,24 +27,30 @@ class PersonNumbers extends Model
 
     ];
 
-    public static function checkAndInsert($userId, $personId, $personNumber)
+    public function getPersonNumbers( $personId = null )
+    {
+        return PersonNumbers::where(Contacts::$userId, $personId);
+    }
+
+
+    public static function checkAndInsert( $personId, $personNumber )
     {
 
-        if(self::where([
-            'owner_user_id' => $userId,
+        if (self::where([
+            'owner_user_id' => Contacts::$userId,
             'person_id'     => $personId,
             'number'        => $personNumber
-        ])->exists()){
-            return responder()->error(400, 'Person\'s number already exists in your contact list')->respond(400);
+        ])->exists()) {
+            return false;
         }
 
         self::insert([
-            'owner_user_id' => $userId,
+            'owner_user_id' => Contacts::$userId,
             'person_id'     => $personId,
             'number'        => $personNumber
         ]);
 
-        return responder()->success(['message' => 'Number added'])->respond();
+        return true;
     }
 
 }
